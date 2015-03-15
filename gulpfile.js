@@ -2,6 +2,7 @@
 
 var autoprefixer = require('gulp-autoprefixer'),
   browserSync = require('browser-sync'),
+  coffee = require('gulp-coffee'),
   concat = require('gulp-continuous-concat'),
   data = require('gulp-data'),
   del = require('del'),
@@ -19,7 +20,7 @@ var autoprefixer = require('gulp-autoprefixer'),
 
 var SRC = {
   ASSETS:       ['src/assets/**/*'],
-  JS :          ['src/js/*.js'],
+  JS :          ['src/js/*.coffee'],
   EXTERNAL_JS : ['src/js/external/**/*.min.js'],
   HTML :        ['src/**/*.html'],
   JADE :        ['src/**/*.jade', '!src/**/_*.jade'],
@@ -46,7 +47,7 @@ gulp.task('js',
     return gulp.src( SRC.JS )
       .pipe( plumber() )
       .pipe( watch( SRC.JS ) )
-      .pipe( to5() )
+      .pipe( coffee({bare: true}) ) 
       .pipe( concat('main.js') )
       .pipe( gulpif(process.env.ENVIRONMENT === 'dist', uglify()) )
       .pipe( gulpif(process.env.ENVIRONMENT === 'dist', stripDebug()) )
