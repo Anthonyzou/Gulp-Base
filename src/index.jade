@@ -1,6 +1,11 @@
 doctype html
 include jade/_mixins.jade
 html
-  +header("test")
+  head
+    +header("anthony")
   body
-    h1 Hello worlds!s whats up i like thiz
+    div.container
+        h1 Hello world! ss
+        h2 #{process.env.ENVIRONMENT}
+    script(src='js/external/external.js')
+    script(src='js/main.js')
