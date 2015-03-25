@@ -1,24 +1,24 @@
 'use strict'
 
-autoprefixer =    require 'gulp-autoprefixer'
-browserSync =     require 'browser-sync'
-coffee =          require 'gulp-coffee'
-concat =          require 'gulp-concat'
-del =             require 'del'
-es =              require 'event-stream'
-fs =              require 'fs'
-gulp =            require 'gulp'
-gulpif =          require 'gulp-if'
-jade =            require 'gulp-jade'
-less =            require 'gulp-less'
-minifyCSS =       require 'gulp-minify-css'
-path =            require 'path'
-plumber =         require 'gulp-plumber'
-rename =          require 'gulp-rename'
-stripDebug =      require 'gulp-strip-debug'
-uglify =          require 'gulp-uglify'
-util =            require 'gulp-util'
-watch =           require 'gulp-watch'
+autoprefixer =    require('gulp-autoprefixer')
+browserSync =     require('browser-sync')
+coffee =          require('gulp-coffee')
+concat =          require('gulp-concat')
+del =             require('del')
+es =              require('event-stream')
+fs =              require('fs')
+gulp =            require('gulp')
+gulpif =          require('gulp-if')
+jade =            require('gulp-jade')
+less =            require('gulp-less')
+minifyCSS =       require('gulp-minify-css')
+path =            require('path')
+plumber =         require('gulp-plumber')
+rename =          require('gulp-rename')
+stripDebug =      require('gulp-strip-debug')
+uglify =          require('gulp-uglify')
+util =            require('gulp-util')
+watch =           require('gulp-watch')
 
 SRC = 
   ASSETS:       [ 'src/assets/**/*' ]
