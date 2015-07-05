@@ -12,15 +12,15 @@ gulpif =          require('gulp-if')
 jade =            require('gulp-jade')
 less =            require('gulp-less')
 minifyCSS =       require('gulp-minify-css')
+minifyHTML =      require('gulp-minify-html')
 path =            require('path')
 plumber =         require('gulp-plumber')
 rename =          require('gulp-rename')
+runSequence =     require('run-sequence').use(gulp)
 stripDebug =      require('gulp-strip-debug')
 uglify =          require('gulp-uglify')
 util =            require('gulp-util')
 watch =           require('gulp-watch')
-runSequence =     require('run-sequence').use(gulp)
-minifyHTML =      require('gulp-minify-html')
 
 SRC = 
   ASSETS:       [ 'src/assets/**/*' ]
@@ -32,7 +32,7 @@ SRC =
   TARGET:       [ 'build' ]
 
 TYPE = process.env.ENVIRONMENT
-console.log TYPE
+util.log TYPE
 
 notify = (event) ->
   util.log 'File #{event.path.split('/').splice(-1)} was #{event.type}, running tasks...'
@@ -91,8 +91,8 @@ gulp.task 'browser-sync', browserSyncTask = (cb) ->
     open: false
 
 gulp.task 'watch', (cb) ->
-  watch SRC.COFFEE, coffeeTask
   watch SRC.ASSETS, lessTask
+  watch SRC.COFFEE, coffeeTask
   watch SRC.EXTERNAL_JS, jadeTask
   watch SRC.JADE, assetsTask
   watch SRC.LESS, externalJSTask
