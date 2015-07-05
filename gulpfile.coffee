@@ -1,24 +1,26 @@
 'use strict'
 
-autoprefixer =    require 'gulp-autoprefixer'
-browserSync =     require 'browser-sync'
-coffee =          require 'gulp-coffee'
-concat =          require 'gulp-concat'
-del =             require 'del'
-es =              require 'event-stream'
-fs =              require 'fs'
-gulp =            require 'gulp'
-gulpif =          require 'gulp-if'
-jade =            require 'gulp-jade'
-less =            require 'gulp-less'
-minifyCSS =       require 'gulp-minify-css'
-path =            require 'path'
-plumber =         require 'gulp-plumber'
-rename =          require 'gulp-rename'
-stripDebug =      require 'gulp-strip-debug'
-uglify =          require 'gulp-uglify'
-util =            require 'gulp-util'
-watch =           require 'gulp-watch'
+autoprefixer =    require('gulp-autoprefixer')
+browserSync =     require('browser-sync')
+coffee =          require('gulp-coffee')
+concat =          require('gulp-concat')
+del =             require('del')
+es =              require('event-stream')
+fs =              require('fs')
+gulp =            require('gulp')
+gulpif =          require('gulp-if')
+jade =            require('gulp-jade')
+less =            require('gulp-less')
+minifyCSS =       require('gulp-minify-css')
+path =            require('path')
+plumber =         require('gulp-plumber')
+rename =          require('gulp-rename')
+stripDebug =      require('gulp-strip-debug')
+uglify =          require('gulp-uglify')
+util =            require('gulp-util')
+watch =           require('gulp-watch')
+runSequence =     require('run-sequence').use(gulp)
+minifyHTML =      require('gulp-minify-html')
 
 SRC = 
   ASSETS:       [ 'src/assets/**/*' ]
@@ -28,7 +30,6 @@ SRC =
   JADE:         [ 'src/**/*.jade', '!src/**/_*.jade' ]
   LESS:         [ 'src/styling/**/*.less' ]
   TARGET:       [ 'build' ]
-  MARKDOWN:     [ 'src/markdown/**/*.md' ]
 
 TYPE = process.env.ENVIRONMENT
 console.log TYPE
@@ -46,42 +47,42 @@ getFolders = (dir) ->
   fs.readdirSync(dir).filter (file) ->
     fs.statSync(path.join(dir, file)).isDirectory()
 
-gulp.task 'less', (cb) ->
-  gulp.src(SRC.LESS)
-    .pipe(plumber({errorHandler: onError}))
-    .pipe(less())
-    .pipe(gulpif(TYPE == 'dist', minifyCSS()))
-    .pipe(autoprefixer('browsers': ['> 1%','ie >= 8']))
-    .pipe(gulp.dest(SRC.TARGET + '/css'))
-
-gulp.task 'coffee', ->
-  # es.concat.apply null, getFolders('src/js/main').map (folder) ->
+gulp.task 'coffee', coffeeTask = (cb) ->
     gulp.src(SRC.COFFEE)
       .pipe(plumber(errorHandler: onError))
       .pipe(coffee(bare: true))
       .pipe(concat('main.js'))
       .pipe(gulpif(TYPE == 'dist', stripDebug()))
       .pipe(gulp.dest(SRC.TARGET + '/js'))
+  # es.concat.apply null, getFolders('src/js/main').map (folder) ->
+
+gulp.task 'less', lessTask = (cb) ->
+  gulp.src(SRC.LESS)
+    .pipe(plumber({errorHandler: onError}))
+    .pipe(less())
+    .pipe(gulpif(TYPE == 'dist', minifyCSS()))
+    .pipe(autoprefixer('browsers': ['> 1%','ie >= 8']))
+    .pipe(gulp.dest(SRC.TARGET + '/css'))
   
-gulp.task 'jade', (cb) ->
+gulp.task 'jade', jadeTask = (cb) ->
   gulp.src(SRC.JADE)
     .pipe(plumber({errorHandler: onError}))
     .pipe(jade(pretty: "\t"))
     .pipe(gulp.dest(SRC.TARGET + '/'))
 
-gulp.task 'assets', (cb) ->
+gulp.task 'assets', assetsTask = (cb) ->
   gulp.src(SRC.ASSETS)
     .pipe(plumber({errorHandler: onError}))
     .pipe(gulp.dest(SRC.TARGET + '/assets'))
 
-gulp.task 'externalJS', (cb) ->
+gulp.task 'externalJS', externalJSTask = (cb) ->
   gulp.src(SRC.EXTERNAL_JS)
     .pipe(plumber({errorHandler: onError}))
-    .pipe rename({dirname: ''})
+    .pipe(rename({dirname: ''}))
     # .pipe(concat('external.js'))
     .pipe(gulp.dest(SRC.TARGET + '/js/external'))
 
-gulp.task 'browser-sync', (cb) ->
+gulp.task 'browser-sync', browserSyncTask = (cb) ->
   files = [ SRC.TARGET + '/**' ]
   browserSync.init files,
     server: 
@@ -90,16 +91,16 @@ gulp.task 'browser-sync', (cb) ->
     open: false
 
 gulp.task 'watch', (cb) ->
-  gulp.watch(SRC.LESS, ['less'])
-  gulp.watch(SRC.JADE, ['jade'])
-  gulp.watch(SRC.COFFEE, ['coffee'])
-  gulp.watch(SRC.ASSETS, ['assets'])
-  gulp.watch(SRC.EXTERNAL_JS, ['externalJS'])
+  watch SRC.COFFEE, coffeeTask
+  watch SRC.ASSETS, lessTask
+  watch SRC.EXTERNAL_JS, jadeTask
+  watch SRC.JADE, assetsTask
+  watch SRC.LESS, externalJSTask
 
 # Clean
 gulp.task 'clean', (cb) ->
   del SRC.TARGET + '/**', cb
 
 # Default task
-gulp.task 'default', [ 'clean' ], ->
-  gulp.start 'coffee','jade', 'watch', 'less', 'externalJS', 'assets', 'browser-sync'
+gulp.task 'default', ->
+  runSequence 'clean', ['coffee', 'jade', 'less', 'externalJS', 'assets'], ['watch', 'browser-sync']
