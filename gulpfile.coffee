@@ -22,7 +22,7 @@ uglify =          require('gulp-uglify')
 util =            require('gulp-util')
 watch =           require('gulp-watch')
 
-SRC = 
+SRC =
   ASSETS:       [ 'src/assets/**/*' ]
   COFFEE:       [ 'src/js/main/**/*.coffee' ]
   EXTERNAL_JS:  [ 'src/js/external/**/*.js' , 'src/js/external/**/*.js.*' , 'src/js/external/**/*.min*']
@@ -63,7 +63,7 @@ gulp.task 'less', lessTask = (cb) ->
     .pipe(gulpif(TYPE == 'dist', minifyCSS()))
     .pipe(autoprefixer('browsers': ['> 1%','ie >= 8']))
     .pipe(gulp.dest(SRC.TARGET + '/css'))
-  
+
 gulp.task 'jade', jadeTask = (cb) ->
   gulp.src(SRC.JADE)
     .pipe(plumber({errorHandler: onError}))
@@ -85,17 +85,17 @@ gulp.task 'externalJS', externalJSTask = (cb) ->
 gulp.task 'browser-sync', browserSyncTask = (cb) ->
   files = [ SRC.TARGET + '/**' ]
   browserSync.init files,
-    server: 
+    server:
       baseDir: SRC.TARGET
     notify: false
     open: false
 
 gulp.task 'watch', (cb) ->
-  watch SRC.ASSETS, lessTask
+  watch SRC.ASSETS, assetsTask
   watch SRC.COFFEE, coffeeTask
-  watch SRC.EXTERNAL_JS, jadeTask
+  watch SRC.EXTERNAL_JS, externalJSTask
   watch SRC.JADE, assetsTask
-  watch SRC.LESS, externalJSTask
+  watch SRC.LESS, lessTask
 
 # Clean
 gulp.task 'clean', (cb) ->
