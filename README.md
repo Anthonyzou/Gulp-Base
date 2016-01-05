@@ -7,8 +7,8 @@ Run with
 
 File types go in these directories.
 
-    ASSETS:        src/assets/**/*
-    COFFEE:        src/js/main/**/*.coffee
+    ASSETS:       src/assets/**/*
+    COFFEE:       src/js/main/**/*.coffee
     EXTERNAL_JS:  src/js/external
     HTML:         src/**/*.html
     JADE:         src/**/*.jade, !src/**/_*.jade

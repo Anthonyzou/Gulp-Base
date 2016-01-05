@@ -31,8 +31,7 @@ SRC =
   LESS:         [ 'src/styling/**/*.less' ]
   TARGET:       [ 'build' ]
 
-TYPE = process.env.ENVIRONMENT
-util.log TYPE
+TYPE = 'dev'
 
 notify = (event) ->
   util.log 'File #{event.path.split('/').splice(-1)} was #{event.type}, running tasks...'
@@ -52,6 +51,7 @@ gulp.task 'coffee', coffeeTask = (cb) ->
       .pipe(plumber(errorHandler: onError))
       .pipe(coffee(bare: true))
       .pipe(concat('main.js'))
+      .pipe(gulpif(TYPE == 'dist', uglify()))
       .pipe(gulpif(TYPE == 'dist', stripDebug()))
       .pipe(gulp.dest(SRC.TARGET + '/js'))
   # es.concat.apply null, getFolders('src/js/main').map (folder) ->
@@ -103,4 +103,8 @@ gulp.task 'clean', (cb) ->
 
 # Default task
 gulp.task 'default', ->
+  runSequence 'clean', ['coffee', 'jade', 'less', 'externalJS', 'assets'], ['watch', 'browser-sync']
+
+gulp.task 'dist', ->
+  TYPE = 'dist'
   runSequence 'clean', ['coffee', 'jade', 'less', 'externalJS', 'assets'], ['watch', 'browser-sync']
