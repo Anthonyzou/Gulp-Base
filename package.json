@@ -36,6 +36,7 @@
     "url": "git@bitbucket.org:anthonyzou/baserepo.git"
   },
   "dependencies": {
-    "gulp-concat": "^2.6.0"
+    "gulp-concat": "^2.6.0",
+    "gulp-load-plugins": "^1.2.0"
   }
 }
