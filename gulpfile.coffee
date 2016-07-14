@@ -25,12 +25,12 @@ SRC =
 TYPE = 'dev'
 
 notify = (event) ->
-  util.log 'File #{event.path.split('/').splice(-1)} was #{event.type}, running tasks...'
+  $.util.log 'File #{event.path.split('/').splice(-1)} was #{event.type}, running tasks...'
 
 onError = (err) ->
-  try util.log err.toString()
+  try $.util.log err.toString()
   catch e
-    util.log err
+    $.util.log err
   @emit 'end'
 
 getFolders = (dir) ->
@@ -85,7 +85,7 @@ gulp.task 'watch', (cb) ->
   $.watch SRC.ASSETS, assetsTask
   $.watch SRC.COFFEE, coffeeTask
   $.watch SRC.EXTERNAL_JS, externalJSTask
-  $.watch SRC.JADE, assetsTask
+  $.watch SRC.JADE, jadeTask
   $.watch SRC.LESS, lessTask
 
 # Clean
